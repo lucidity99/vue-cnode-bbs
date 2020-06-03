@@ -5,18 +5,25 @@
       <router-link to="/about">About</router-link>
     </div>
     <router-view />
+    <Loading v-show="loading"></Loading>
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import Loading from "@/components/Loading";
 
+export default {
+  name: "App",
+  components: { Loading },
+  data() {
+    return {
+      loading: false,
+    };
+  },
+};
+</script>
+
+<style lang="scss">
 #nav {
   padding: 30px;
 
