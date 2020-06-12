@@ -1,85 +1,64 @@
 <template>
   <div class="list">
-    <ul class="post-list">
-      <li class="post" v-for="post in list" :key="post.id">
-        <div class="post-title">
-          <router-link :to="'/topic/' + post.id" class="link-type">
-            <span>{{ post.title }}</span>
-          </router-link>
-        </div>
-        <div class="post-author">
-          <img :src="post.author.avatar_url" />
-          <span>{{ post.author.loginname }}</span>
-        </div>
-        <div>
-          <div class="post-count">
-            {{ post.reply_count }}/{{ post.visit_count }} -
-            <span>{{
-              post.last_reply_at | parseTime("{y}-{m}-{d} {h}:{i}")
-            }}</span>
-          </div>
-        </div>
-      </li>
-    </ul>
+    <mt-navbar class="navbar" v-model="selected">
+      <mt-tab-item
+        :id="index"
+        v-for="(tab, index) in tabs"
+        :key="index"
+        @click.native.prevent="active = 'tab-container' + index"
+      >{{ tab.text }}</mt-tab-item>
+    </mt-navbar>
+    <mt-tab-container class="posts page-tabbar-tab-container" v-model="selected" swipeable>
+      <mt-tab-container-item :id="index" v-for="(tab, index) in tabs" :key="index">
+        <keep-alive>
+          <post-list :tab="tab.key" v-if="selected == index" />
+        </keep-alive>
+      </mt-tab-container-item>
+    </mt-tab-container>
   </div>
 </template>
 
 <script>
-import { fetchList } from "@/api/article";
-import { parseTime } from "@/utils";
+import PostList from "@/views/components/PostList";
 
 export default {
-  name: "List",
-
+  name: "Home",
+  components: {
+    PostList
+  },
   data() {
     return {
-      list: [],
-      listQuery: {
-        page: 1,
-        limit: 20,
-      },
+      tabs: [
+        { key: "all", text: "全部" },
+        { key: "ask", text: "问答" },
+        { key: "share", text: "分享" },
+        { key: "job", text: "招聘" },
+        { key: "good", text: "精华" }
+      ],
+      selected: 0
     };
-  },
-  filters: {
-    parseTime(val) {
-      return parseTime(val);
-    },
-  },
-
-  methods: {
-    getList() {
-      fetchList(this.listQuery).then((res) => {
-        this.list = res.data;
-      });
-    },
-  },
-
-  created() {
-    this.getList();
-  },
+  }
 };
 </script>
 
 <style lang="scss" scoped>
-.post-list {
-  .post {
-    display: flex;
-    flex-direction: column;
+.navbar {
+  position: fixed;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  right: 0;
 
-    .post-author {
-      margin-right: 16px;
+  background: #fff;
+}
 
-      img {
-        width: 60px;
-        height: 60px;
-        object-fit: contain;
-      }
-    }
+.link {
+  color: inherit;
+  padding: 20px;
+  display: block;
+}
 
-    .post-title {
-      display: flex;
-      white-space: nowrap;
-    }
-  }
+.posts {
+  height: 100vh;
 }
 </style>

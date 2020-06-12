@@ -1,20 +1,23 @@
 import request from "@/utils/request";
 
 export function fetchList(query) {
-
-  return request({ 
-   
+  return request({    
     url: "https://cnodejs.org/api/v1/topics",
     method: "get",
-    params: query
-    
+    params: query    
   });
 }
 
-export function fetchDetail() {
+export function fetchDetail(id) {
   return request({
-    url: "https://cnodejs.org/api/v1/topic/5e16978581adfe260207a8c1",
-   // url: `https://cnodejs.org/api/v1/topic/${id}`,
+    url: `https://cnodejs.org/api/v1/topic/${id}`,
     method: "get"   
   });
+}
+
+export function fetchAuthorDetail(username) {
+  return request({
+    url: `https://cnodejs.org/api/v1/user/${username}`,
+    method:'get'
+  })
 }

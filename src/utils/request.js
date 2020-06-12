@@ -1,5 +1,4 @@
 import axios from "axios";
-import Vue from "vue";
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -9,7 +8,6 @@ const service = axios.create({
 
 service.interceptors.request.use(
   config => {
-    Vue.prototype.bus.$emit("loading", true);   
     config.headers["Content-Type"] = "application/x-www-form-urlencoded";
     console.log(config)
     return config;
@@ -23,8 +21,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
  
   response => {
-    const res = response.data;
-    Vue.prototype.bus.$emit("loading", false);
+    const res = response.data;    
     // if the custom code is not 20000, it is judged as an error.
     if (response.status !== 200) {
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
